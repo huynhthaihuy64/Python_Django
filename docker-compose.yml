@@ -1,0 +1,33 @@
+version: '3'
+services:
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        restart: unless-stopped
+        ports:
+            - '33079:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: 'python_database'
+            MYSQL_USER: 'python_user'
+            MYSQL_PASSWORD: 'password1'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'sail-mysql:/var/lib/mysql'
+            - './docker/db/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p'
+            retries: 3
+            timeout: 5s
+networks:
+    sail:
+        driver: bridge
+volumes:
+    sail-mysql:
+        driver: local
