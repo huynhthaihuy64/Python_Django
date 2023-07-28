@@ -14,11 +14,20 @@ class CreateUserForm(UserCreationForm):
             'password1',
             'password2'
         ]
+class Category(models.Model):
+    name = models.CharField(max_length=200,null=False)
+    sub_category = models.ForeignKey('self', on_delete = models.CASCADE, related_name = 'sub_categories', null =True, blank=True)
+    is_sub = models.BooleanField(default = True)
+    slug = models.SlugField(max_length=200,unique=True)
+
+    def __str__(self):
+        return self.name
 class Product(models.Model):
     name = models.CharField(max_length=50,null=False)
     price = models.FloatField()
     digital = models.BooleanField(default=False, null=False, blank=False)
     image = models.ImageField(null=False,blank=True)
+    category = models.ManyToManyField(Category, related_name='product')
 
     def __str__(self):
         return self.name
