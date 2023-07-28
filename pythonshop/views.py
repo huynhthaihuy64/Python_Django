@@ -16,14 +16,18 @@ def home(request):
             order = order.first()
         else:
             order = Order.objects.create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
         cartItems = order.get_cart_items
+        user_not_login = "hidden"
+        user_login = "show"
     else:
-        items = []
         order = {'get_cart_items':0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
+        user_not_login = "show"
+        user_login = "hidden"
+    categories = Category.objects.all()
     products = Product.objects.all()
-    context = {'products': products, 'cartItems': cartItems}
+    context = {'products': products, 'cartItems': cartItems,'user_not_login': user_not_login,
+        'user_login':user_login, 'categories':categories}
     return render(request, 'pythonshop/home.html',context)
 def cart(request):
     order = None
@@ -36,11 +40,17 @@ def cart(request):
             order = Order.objects.create(customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItems = order.get_cart_items
+        user_not_login = "hidden"
+        user_login = "show"
     else:
         items = []
         order = {'get_cart_items':0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
-    context = {'items': items, 'order': order, 'cartItems': cartItems}
+        user_not_login = "show"
+        user_login = "hidden"
+    categories = Category.objects.all()
+    context = {'items': items, 'order': order, 'cartItems': cartItems,'user_not_login': user_not_login,
+        'user_login':user_login, 'categories':categories}
     return render(request, 'pythonshop/cart.html',context)
 def checkout(request):
     order = None
@@ -53,11 +63,17 @@ def checkout(request):
             order = Order.objects.create(customer=customer, complete=False)
         items = order.orderitem_set.all()
         cartItems = order.get_cart_items
+        user_not_login = "hidden"
+        user_login = "show"
     else:
         items = []
         order = {'get_cart_items':0, 'get_cart_items': 0}
         cartItems = order['get_cart_items']
-    context = {'items': items, 'order': order, 'cartItems': cartItems}
+        user_not_login = "show"
+        user_login = "hidden"
+    categories = Category.objects.all()
+    context = {'items': items, 'order': order, 'cartItems': cartItems,'user_not_login': user_not_login,
+        'user_login':user_login,'categories':categories}
     return render(request, 'pythonshop/checkout.html',context)
 def updateItem(request):
    data = json.loads(request.body)
@@ -108,3 +124,63 @@ def loginPage(request):
 def logoutPage(request):
     logout(request)
     return redirect('login')
+
+def search(request):
+    if request.method == "POST":
+        keyword = request.POST.get('keyword')
+        products = Product.objects.filter(name__icontains = keyword)
+    order = None
+    if request.user.is_authenticated:
+        customer = request.user
+        order = Order.objects.filter(customer = customer, complete = False)
+        if order.exists():
+            order = order.first()
+        else:
+            order = Order.objects.create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+        user_not_login = "hidden"
+        user_login = "show"
+    else:
+        items = []
+        order = {'get_cart_items':0, 'get_cart_items': 0}
+        cartItems = order['get_cart_items']
+        user_not_login = "show"
+        user_login = "hidden"
+    categories = Category.objects.all()
+    context = {'keyword': keyword,'products': products,'items': items, 'order': order, 'cartItems': cartItems,'user_not_login': user_not_login,
+        'user_login':user_login,'categories':categories}
+    return render(request, 'pythonshop/search.html', context)
+
+def category(request,id):
+    data = Category.objects.get(id=id)
+    products = data.product.all()
+    categories = Category.objects.all()
+    context = {'products':products,'categories':categories}
+    return render(request, 'pythonshop/search.html', context)
+
+def detail(request,id):
+    product = Product.objects.get(id=id)
+    categories = Category.objects.all()
+    order = None
+    if request.user.is_authenticated:
+        customer = request.user
+        order = Order.objects.filter(customer = customer, complete = False)
+        if order.exists():
+            order = order.first()
+        else:
+            order = Order.objects.create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+        user_not_login = "hidden"
+        user_login = "show"
+    else:
+        items = []
+        order = {'get_cart_items':0, 'get_cart_items': 0}
+        cartItems = order['get_cart_items']
+        user_not_login = "show"
+        user_login = "hidden"
+    categories = Category.objects.all()
+    context = {'product':product,'items': items, 'order': order, 'cartItems': cartItems,'user_not_login': user_not_login,
+        'user_login':user_login, 'categories':categories}
+    return render(request, 'pythonshop/detail.html',context)
