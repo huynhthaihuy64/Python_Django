@@ -9,6 +9,7 @@
         <link href="{%static 'pythonshop/css/style.css' %}" rel="stylesheet"/>
         <link href="{%static 'pythonshop/css/owl.carousel.min.css' %}" rel="stylesheet"/>
         <link href="{%static 'pythonshop/css/all.min.css' %}" rel="stylesheet"/>
+        <link href="{%static 'pythonshop/css/new.css' %}" rel="stylesheet"/>
         <link type="text/css" href="{%static 'pythonshop/css/main.css' %}" rel="stylesheet"/>
         <!-- JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -36,6 +37,8 @@
         }
         const csrftoken = getCookie('csrftoken');
         </script>
+        <!--Font Awesome-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title>Home Page</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -61,37 +64,44 @@
                       Category
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">1</a></li>
-                      <li><a class="dropdown-item" href="#">2</a></li>
-                      <li><a class="dropdown-item" href="#">3</a></li>
+                      {%for category in categories%}
+                      <li><a class="dropdown-item" href="{% url 'category' id=category.id %}">{{category.name}}</a></li>
+                      {% endfor %}
                     </ul>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                  </li>
                 </ul>
-                <form class="d-flex">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" method="POST" action="{% url 'search'%}">
+                  {%csrf_token%}
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
                   <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                 <ul class="navbar-nav mb-2 mb-lg-0">
-                  <li class="nav-item dropdown">
+                  <li class="nav-item dropdown" style="visibility: {{user_login}}">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      User
+                      {{request.user.username}}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="#">Profile</a></li>
-                      <li><a class="dropdown-item" href="{% url 'cart' %}">Cart</a></li>
-                      <li><a class="dropdown-item" href="#">Logout</a></li>
+                      <li><a class="dropdown-item" href="#"><i class="fas fa-user" style="margin-right: 5px; margin-left:3px"></i>Profile</a></li>
+                      <li><a class="dropdown-item" href="{%url 'logout' %}"><i class="fas fa-sign-out-alt" style="margin-right: 5px; margin-left:3px"></i>Logout</a></li>
                     </ul>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Login</a>
+                  <li class="nav-item" style="visibility: {{user_not_login}}">
+                    <a class="nav-link active" aria-current="page" href="{%url 'login'%}">Login</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Register</a>
+                  <li class="nav-item" style="visibility: {{user_not_login}}">
+                    <a class="nav-link active" aria-current="page" href="{%url 'register'%}">Register</a>
                   </li>
                 </ul>
+                <div class="form-inline my-2 my-lg-0 mr-5" style="visibility: {{user_login}}">
+                    <a class="nav-link active" href="{% url 'cart' %}" style="display:block">
+                      <i class="fas fa-shopping-cart" style="margin-right: 5px ; margin-left: 0px"></i>
+                      Cart
+                    </a>
+                    <p id="cart-total" style="position: absolute;
+                    top: 7px;
+                    right: 14px;
+                    z-index: 1;">{{cartItems}}</p>
+                </div>
               </div>
             </div>
           </nav>
@@ -103,6 +113,12 @@
           {% block cart_content %}{% endblock cart_content%}
           <!--Layout cart-->
           {% block content_checkout %}{% endblock content_checkout %}
+          <!--Register-->
+          {%block register %}{%endblock register%}
+          <!--Login-->
+          {%block login %}{%endblock login%}
+          <!--Search-->
+          {%block search %}{%endblock search%}
           <!--Footer-->
           <footer class="container-fluid bg-success text-center fixed-bottom p-2 mt-5">
             copyright 2023

@@ -30,8 +30,8 @@
         <img class="thumbnail w-100" src="{{product.ImageURL}}"/>
         <div class="box-element product">
             <h6><strong>{{product.name}}</strong></h6>
-            <button data-product={{product.id}} data-action = "add" class="btn btn-outline-secondary add-btn update-cart">Add To Cart</button>
-            <a class="btn btn-outline-success ml-2" href="#">Detail</a>
+            <button data-product={{product.id}} data-action = "add" class="btn btn-outline-secondary add-btn update-cart"><i class="fas fa-shopping-cart" style="margin-right: 5px ; margin-left: 0px"></i> Add To Cart</button>
+            <a class="btn btn-outline-success ml-2" href="{%url 'detail' id=product.id%}">Detail</a>
             <h3 style="display: inline-block; float: right"><strong>${{product.price|floatformat:0}}</strong></h3>
         </div>
     </div>

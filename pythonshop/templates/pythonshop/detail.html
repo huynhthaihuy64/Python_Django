@@ -1,0 +1,47 @@
+{% extends 'pythonshop/base.html' %}
+{%load static %}
+{% comment %} <!DOCTYPE html>
+<html>
+    <head>
+        <link href="{%static 'pythonshop/css/new.css' %}" rel="stylesheet"/>
+    </head>
+    <body> {% endcomment %}
+{% block cart_content %}
+<section>
+    <div class="container">
+		<div class="card">
+			<div class="container-fliud">
+				<div class="wrapper row">
+					<div class="preview col-md-6">
+						
+						<div class="preview-pic tab-content">
+						  <div class="tab-pane active" id="pic-1"><img src="{{product.ImageURL}}" /></div>
+						</div>
+						
+					</div>
+					<div class="details col-md-6">
+						<h3 class="product-title">{{product.name}}</h3>
+						<div class="rating">
+							<div class="stars">
+								<span class="fa fa-star checked"></span>
+								<span class="fa fa-star checked"></span>
+								<span class="fa fa-star checked"></span>
+								<span class="fa fa-star"></span>
+								<span class="fa fa-star"></span>
+							</div>
+							<span class="review-no">41 reviews</span>
+						</div>
+						<p class="product-description">Suspendisse quos? Tempus cras iure temporibus? Eu laudantium cubilia sem sem! Repudiandae et! Massa senectus enim minim sociosqu delectus posuere.</p>
+						<h4 class="price">current price: <span>{{product.price | floatformat:0}}$</span></h4>
+						<p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p>
+                        <div class="action" style="visibility: {{user_login}}">
+							<button data-product={{product.id}} data-action = "add" class="add-to-cart btn btn-default update-cart" type="button">add to cart</button>
+							<button class="like btn btn-default" type="button"><span class="fa fa-heart"></span></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock cart_content %}
